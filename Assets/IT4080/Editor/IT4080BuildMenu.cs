@@ -342,4 +342,16 @@ public static class IT4080BuildMenu {
     private static void MnuRun4() {
         RunX(4);
     }
+
+
+    [MenuItem("IT4080/ViewLogs")]
+    private static void MnuWindow() {
+        string curPath = EditorPrefs.GetString(BUILD_PATH_PREF);
+
+        var window = EditorWindow.GetWindow<It4080.LogViewer>(utility: true, title: "IT4080 The Flame Thrower", focus: true);
+        window.basePath = Path.Join(Path.GetDirectoryName(curPath), Path.GetFileNameWithoutExtension(curPath));
+        window.ShowUtility();
+        window.LoadLogs();
+    }
+
 }

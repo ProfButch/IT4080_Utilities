@@ -9,17 +9,13 @@ namespace It4080
     public class LogViewer : EditorWindow
     {
 
+        private Label log1Title;
+        private Label log2Title;
+
         private Label txtLog1;
         private Label txtLog2;
 
-
-        //[MenuItem("Window/UI Toolkit/LogViewer")]
-        //public static void ShowExample()
-        //{
-        //    LogViewer wnd = GetWindow<LogViewer>();
-        //    wnd.titleContent = new GUIContent("LogViewer");
-        //}
-
+        public string basePath;
 
         private void OutOfTheBoxGUI()
         {
@@ -54,16 +50,36 @@ namespace It4080
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/IT4080/Editor/LogViewer.uxml");
             VisualElement uxmlElements = visualTree.Instantiate();
             root.Add(uxmlElements);
-            
+
+            log1Title = rootVisualElement.Query<Label>("Log1Title").First();
+            log2Title = rootVisualElement.Query<Label>("Log2Title").First();
+
             txtLog1 = rootVisualElement.Query<Label>("txtLog1").First();
             txtLog2 = rootVisualElement.Query<Label>("txtLog2").First();
 
-            txtLog1.text = FileToText("/Users/profbutch/temp/unity_builds/TheBuild_1.log");
-            txtLog2.text = FileToText("/Users/profbutch/temp/unity_builds/TheBuild_2.log");
+            //LoadLogs();
         }
 
 
+        public void LoadLogs()
+        {
+            LoadLog($"{basePath}_1.log", log1Title, txtLog1);
+            LoadLog($"{basePath}_2.log", log2Title, txtLog2);
+        }
 
+
+        private void LoadLog(string path, Label title, Label textBox)
+        {
+            title.text = path;
+            if (File.Exists(path))
+            {
+                
+                textBox.text = FileToText(path);
+            }else
+            {
+                textBox.text = "File not found";
+            }
+        }
 
 
         private string FileToText(string path) {
