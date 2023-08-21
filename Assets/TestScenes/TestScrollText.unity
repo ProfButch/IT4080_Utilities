@@ -388,6 +388,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1821559848}
     m_Modifications:
+    - target: {fileID: 7414627473929219749, guid: e49f98a673bb043cf9b630c049565f1a, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7414627473929219749, guid: e49f98a673bb043cf9b630c049565f1a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7414627473929219749, guid: e49f98a673bb043cf9b630c049565f1a, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7414627473929219749, guid: e49f98a673bb043cf9b630c049565f1a, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7414627473951146511, guid: e49f98a673bb043cf9b630c049565f1a, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7414627473951146511, guid: e49f98a673bb043cf9b630c049565f1a, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7414627473952966464, guid: e49f98a673bb043cf9b630c049565f1a, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -486,6 +510,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7414627474295782182, guid: e49f98a673bb043cf9b630c049565f1a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7414627474421907580, guid: e49f98a673bb043cf9b630c049565f1a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7414627474421907580, guid: e49f98a673bb043cf9b630c049565f1a, type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7414627474793772254, guid: e49f98a673bb043cf9b630c049565f1a, type: 3}
