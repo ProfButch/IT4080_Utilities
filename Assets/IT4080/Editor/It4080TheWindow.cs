@@ -21,8 +21,21 @@ namespace It4080
         bool myBool = true;
         float myFloat = 1.23f;
 
+
         public It4080TheWindow() {
         }
+
+
+       //private UnityEngine.UIElements.ScrollView CreateScrollableTextArea()
+       //{
+
+       //     GameObject thePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/IT4080/Prefabs/ScrollableText.prefab");
+       //     GameObject inst = Instantiate<GameObject>(thePrefab, Vector3.zero, Quaternion.identity);
+
+       //     var toReturn = inst.GetComponent<ScrollView>();
+
+       //     return toReturn;
+       //}
 
 
         public void CreateGUI() {
@@ -30,9 +43,11 @@ namespace It4080
             rootVisualElement.Add(lbl);
 
             TextField txt = new TextField();
+
             txt.multiline = true;           
             rootVisualElement.Add(txt);
             txt.value = FileToText("/Users/profbutch/temp/unity_builds/TheBuild_1.log");
+
         }
 
 
@@ -55,5 +70,4 @@ namespace It4080
             return toReturn;
         }
     }
-
 }
