@@ -11,16 +11,18 @@ namespace It4080
         private class LogDisplay {
             private VisualElement displayRoot;
 
-            Label title;
-            Label logText;
+            public Label title;
+            public Label logText;
             
 
             public LogDisplay(VisualElement baseElement)
-            {
-                Debug.Log(baseElement);
+            {                              
                 title = baseElement.Query<Label>("Title").First();
                 logText = baseElement.Query<Label>("LogText").First();
                 displayRoot = baseElement;
+                Debug.Log(baseElement);
+                Debug.Log(logText);
+                Debug.Log(title);
             }
 
 
@@ -50,6 +52,8 @@ namespace It4080
 
         private LogDisplay disp1;
         private LogDisplay disp2;
+        private LogDisplay disp3;
+        private LogDisplay disp4;
 
         public string basePath;
 
@@ -87,10 +91,18 @@ namespace It4080
             VisualElement uxmlElements = visualTree.Instantiate();
             root.Add(uxmlElements);
 
+            root.Query<VisualElement>("TwoLogs").First().visible = true;
+
             disp1 = new LogDisplay(root.Query<VisualElement>("LogDisplay1").First());
-            Debug.Log("Disp 1 created");
             disp2 = new LogDisplay(root.Query<VisualElement>("LogDisplay2").First());
-            Debug.Log("Disp 2 created");
+            disp3 = new LogDisplay(root.Query<VisualElement>("LogDisplay3").First());
+            disp4 = new LogDisplay(root.Query<VisualElement>("LogDisplay4").First());
+
+            disp1.title.text = "Hello World!!!";
+            disp1.logText.text = "Look\nHere\nYou\nShithead!!!";
+
+            disp2.title.text = "Hello World!!!";
+            disp2.logText.text = "Look\nHere\nYou\nShithead!!!";
         }
 
 
@@ -98,6 +110,8 @@ namespace It4080
         {
             disp1.LoadLog($"{basePath}_1.log");
             disp2.LoadLog($"{basePath}_2.log");
+            disp3.LoadLog($"{basePath}_3.log");
+            disp4.LoadLog($"{basePath}_4.log");
         }
 
 
