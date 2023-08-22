@@ -8,12 +8,48 @@ namespace It4080
 {
     public class LogViewer : EditorWindow
     {
+        private class LogDisplay {
+            private VisualElement displayRoot;
 
-        private Label log1Title;
-        private Label log2Title;
+            Label title;
+            Label logText;
+            
 
-        private Label txtLog1;
-        private Label txtLog2;
+            public LogDisplay(VisualElement baseElement)
+            {
+                Debug.Log(baseElement);
+                title = baseElement.Query<Label>("Title").First();
+                logText = baseElement.Query<Label>("LogText").First();
+                displayRoot = baseElement;
+            }
+
+
+            public void LoadLog(string path) {
+                Debug.Log($"Loading log {path}");
+                title.text = path;
+                if (File.Exists(path)) {
+                    logText.text = FileToText(path);
+                } else {
+                    logText.text = "File not found";
+                }
+                Debug.Log($"Loaded log {path}");
+            }
+
+
+            private string FileToText(string path) {
+                StreamReader reader = new StreamReader(path);
+                string toReturn = reader.ReadToEnd();
+                reader.Close();
+                return toReturn;
+            }
+        }
+
+
+
+
+
+        private LogDisplay disp1;
+        private LogDisplay disp2;
 
         public string basePath;
 
@@ -51,43 +87,40 @@ namespace It4080
             VisualElement uxmlElements = visualTree.Instantiate();
             root.Add(uxmlElements);
 
-            log1Title = rootVisualElement.Query<Label>("Log1Title").First();
-            log2Title = rootVisualElement.Query<Label>("Log2Title").First();
-
-            txtLog1 = rootVisualElement.Query<Label>("txtLog1").First();
-            txtLog2 = rootVisualElement.Query<Label>("txtLog2").First();
-
-            //LoadLogs();
+            disp1 = new LogDisplay(root.Query<VisualElement>("LogDisplay1").First());
+            Debug.Log("Disp 1 created");
+            disp2 = new LogDisplay(root.Query<VisualElement>("LogDisplay2").First());
+            Debug.Log("Disp 2 created");
         }
 
 
         public void LoadLogs()
         {
-            LoadLog($"{basePath}_1.log", log1Title, txtLog1);
-            LoadLog($"{basePath}_2.log", log2Title, txtLog2);
+            disp1.LoadLog($"{basePath}_1.log");
+            disp2.LoadLog($"{basePath}_2.log");
         }
 
 
-        private void LoadLog(string path, Label title, Label textBox)
-        {
-            title.text = path;
-            if (File.Exists(path))
-            {
+        //private void LoadLog(string path, Label title, Label textBox)
+        //{
+        //    title.text = path;
+        //    if (File.Exists(path))
+        //    {
                 
-                textBox.text = FileToText(path);
-            }else
-            {
-                textBox.text = "File not found";
-            }
-        }
+        //        textBox.text = FileToText(path);
+        //    }else
+        //    {
+        //        textBox.text = "File not found";
+        //    }
+        //}
 
 
-        private string FileToText(string path) {
-            StreamReader reader = new StreamReader(path);
-            string toReturn = reader.ReadToEnd();
-            reader.Close();
-            return toReturn;
-        }
+        //private string FileToText(string path) {
+        //    StreamReader reader = new StreamReader(path);
+        //    string toReturn = reader.ReadToEnd();
+        //    reader.Close();
+        //    return toReturn;
+        //}
 
     }
 }
