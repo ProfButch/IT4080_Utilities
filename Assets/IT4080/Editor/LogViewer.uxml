@@ -1,6 +1,12 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <ui:Template name="LogDisplay" src="project://database/Assets/IT4080/Editor/LogDisplay.uxml?fileID=9197481963319205126&amp;guid=d58fca8ab98b74b478f1295e87001274&amp;type=3#LogDisplay" />
-    <ui:Label text="-- Pre -- " display-tooltip-when-elided="true" style="-unity-text-align: upper-center;" />
+    <uie:Toolbar>
+        <uie:ToolbarToggle focusable="false" value="true" name="ShowLog1" text="Log 1" style="flex-shrink: 1; min-width: auto; flex-basis: auto;" />
+        <uie:ToolbarToggle focusable="false" value="true" name="ShowLog2" text="Log 2" style="flex-shrink: 1;" />
+        <uie:ToolbarToggle focusable="false" value="true" name="ShowLog3" text="Log 3" style="flex-shrink: 1;" />
+        <uie:ToolbarToggle focusable="false" value="true" name="ShowLog4" text="Log 3" style="flex-shrink: 1;" />
+        <uie:ToolbarButton text="Refresh" display-tooltip-when-elided="true" name="Refresh" />
+    </uie:Toolbar>
     <ui:TwoPaneSplitView orientation="Vertical" name="FourLogs" fixed-pane-initial-dimension="250" style="flex-shrink: 0; height: 300px;">
         <ui:TwoPaneSplitView name="LogSplit1" fixed-pane-initial-dimension="250">
             <ui:Instance template="LogDisplay" name="LeftLog" />

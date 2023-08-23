@@ -8,23 +8,25 @@ namespace It4080
 {
     public class LogViewer : EditorWindow
     {
+        /**
+         * 
+         */
         private class LogDisplay {
-            public VisualElement displayRoot;
+            public VisualElement root;
             public Label title;
             public Label logText;
+
+            private Scroller vertScroll;
+            private Scroller horizScroll;
             
 
             public LogDisplay(VisualElement baseElement)
-            {                              
-                title = baseElement.Query<Label>("Title").First();
-                logText = baseElement.Query<Label>("LogText").First();
-                displayRoot = baseElement;
-
-                //Debug.Log("LogDisplay ------------------");
-                //Debug.Log(baseElement);
-                //Debug.Log(logText);
-                //Debug.Log(title);
-                //Debug.Log("------------------ LogDisplay");
+            {
+                root = baseElement;
+                title = root.Query<Label>("Title").First();
+                logText = root.Query<Label>("LogText").First();                
+                vertScroll = root.Query<ScrollView>().First().verticalScroller;
+                horizScroll = root.Query<ScrollView>().First().horizontalScroller;
             }
 
 
@@ -37,70 +39,87 @@ namespace It4080
 
 
             public void LoadLog(string path) {
-                //Debug.Log($"Loading log {path}");
                 title.text = path;
                 if (File.Exists(path)) {
                     logText.text = FileToText(path);
                 } else {
                     logText.text = "File not found";
                 }
-                //Debug.Log($"Loaded log {path}");
+                ScrollToBottom();
+            }
+
+            public void ScrollToBottom()
+            {
+                vertScroll.value = vertScroll.highValue;
+                horizScroll.value = 0;
+            }
+
+            public void ScrollToTop()
+            {
+                vertScroll.value = 0;
+                horizScroll.value = 0;
             }
         }
 
 
 
 
+        /**
+         * 
+         */
+        private class LogSplit
+        {
+            public TwoPaneSplitView root;
+            public LogDisplay leftLog;
+            public LogDisplay rightLog;
+
+
+            public LogSplit(TwoPaneSplitView baseElement)
+            {
+                root = baseElement;
+                leftLog = new LogDisplay(root.Query<VisualElement>("LeftLog").First());
+                rightLog = new LogDisplay(root.Query<VisualElement>("RightLog").First());
+            }
+
+
+            public void showLog(LogDisplay which, bool should)
+            {
+                root.UnCollapse();
+                which.root.visible = should;
+
+                if (!leftLog.root.visible)
+                {
+                    root.CollapseChild(0);
+                }
+
+                if (!rightLog.root.visible)
+                {
+                    root.CollapseChild(1);
+                }
+            }
+
+            public bool AreAllLogsHidden()
+            {
+                return !leftLog.root.visible && !rightLog.root.visible;
+            }
+        }
+
+
+
+
+        // ---------------------------------------------------------------------
+        // ---------------------------------------------------------------------
 
         private TwoPaneSplitView mainSplit;
-        private TwoPaneSplitView split1;
-        private TwoPaneSplitView split2;
-        private LogDisplay disp1;
-        private LogDisplay disp2;
-        private LogDisplay disp3;
-        private LogDisplay disp4;
 
+        private LogSplit topSplit;
+        private LogSplit botSplit;
+        ToolbarButton btnRefresh;
         public string basePath;
 
 
-        private void SetupControls()
-        {
-            mainSplit = rootVisualElement.Query<TwoPaneSplitView>("FourLogs");
 
-            split1 = rootVisualElement.Query<TwoPaneSplitView>("LogSplit1").First();
-            split2 = rootVisualElement.Query<TwoPaneSplitView>("LogSplit2").First();
-
-            disp1 = new LogDisplay(split1.Query<VisualElement>("LeftLog").First());
-            disp2 = new LogDisplay(split1.Query<VisualElement>("RightLog").First());
-            disp3 = new LogDisplay(split2.Query<VisualElement>("LeftLog").First());
-            disp4 = new LogDisplay(split2.Query<VisualElement>("RightLog").First());
-
-        }
-
-
-        private void InitialLayout()
-        {
-            mainSplit.fixedPaneInitialDimension = mainSplit.resolvedStyle.height / 2.0f;
-            split1.fixedPaneInitialDimension = split1.resolvedStyle.width / 2.0f;
-            split2.fixedPaneInitialDimension = split2.resolvedStyle.width / 2.0f;
-
-        }
-
-        private bool is_first_update_call = true;
-        public void Update() {
-            // I could not figure out what event was the first event where all
-            // the controls have been fully instanced and sized.  Calling
-            // InitialLayout anywhere else always resulted in the various sizes
-            // (sytle.width, resolvedStyle.width, contentRect.size.x) being NaN.
-            if (is_first_update_call)
-            {
-                InitialLayout();
-                is_first_update_call = false;
-            }
-        }
-
-        public void CreateGUI()
-        {
+        public void CreateGUI() {
             VisualElement root = rootVisualElement;
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/IT4080/Editor/LogViewer.uxml");
             VisualElement uxmlElements = visualTree.Instantiate();
@@ -111,10 +130,62 @@ namespace It4080
             root.RegisterCallback<GeometryChangedEvent>(OnRootResized);
 
             SetupControls();
-
         }
 
 
+        private void InitialLayout() {
+            mainSplit.fixedPaneInitialDimension = mainSplit.resolvedStyle.height / 2.0f;
+            topSplit.root.fixedPaneInitialDimension = topSplit.root.resolvedStyle.width / 2.0f;
+            botSplit.root.fixedPaneInitialDimension = botSplit.root.resolvedStyle.width / 2.0f;
+        }
+
+
+        private bool _is_first_update_call = true;
+        private bool _should_scroll_to_bottom = false;
+        public void Update() {
+            // I could not figure out what event was the first event where all
+            // the controls have been fully instanced and sized.  Calling
+            // InitialLayout anywhere else always resulted in the various sizes
+            // (sytle.width, resolvedStyle.width, contentRect.size.x) being NaN.
+            if (_is_first_update_call) {
+                InitialLayout();
+                _is_first_update_call = false;
+            }
+
+            if (_should_scroll_to_bottom)
+            {
+                topSplit.leftLog.ScrollToBottom();
+                topSplit.rightLog.ScrollToBottom();
+                _should_scroll_to_bottom = false;
+            }
+        }
+
+
+        // ----------------------
+        // Private
+        // ----------------------
+        private void SetupLogToggle(string toggleName, LogSplit split, LogDisplay disp)
+        {
+            ToolbarToggle logToggle = rootVisualElement.Query<ToolbarToggle>(toggleName).First();
+            logToggle.RegisterValueChangedCallback((changeEvent) => OnLogToggleToggled(split, disp, changeEvent));
+        }
+
+
+        private void SetupControls()
+        {
+            mainSplit = rootVisualElement.Query<TwoPaneSplitView>("FourLogs");
+
+            topSplit = new LogSplit(rootVisualElement.Query<TwoPaneSplitView>("LogSplit1").First());
+            botSplit = new LogSplit(rootVisualElement.Query<TwoPaneSplitView>("LogSplit2").First());
+
+            SetupLogToggle("ShowLog1", topSplit, topSplit.leftLog);
+            SetupLogToggle("ShowLog2", topSplit, topSplit.rightLog);
+            SetupLogToggle("ShowLog3", botSplit, botSplit.leftLog);
+            SetupLogToggle("ShowLog4", botSplit, botSplit.rightLog);
+
+            btnRefresh = rootVisualElement.Query<ToolbarButton>("Refresh");
+            btnRefresh.clicked += OnRefreshPressed;
+        }
 
         // ----------------------
         // Events
@@ -131,12 +202,36 @@ namespace It4080
         }
 
 
+        private void OnLogToggleToggled(LogSplit split, LogDisplay disp, ChangeEvent<bool> changeEvent) {
+            split.showLog(disp, changeEvent.newValue);
+            mainSplit.UnCollapse();
+
+            if (topSplit.AreAllLogsHidden()) {
+                mainSplit.CollapseChild(0);
+            }
+
+            if (botSplit.AreAllLogsHidden()) {
+                mainSplit.CollapseChild(1);
+            }
+        }
+
+
+        private void OnRefreshPressed()
+        {
+            LoadLogs();
+        }
+
+
+        // ----------------------
+        // Public
+        // ----------------------
         public void LoadLogs()
         {
-            disp1.LoadLog($"{basePath}_1.log");
-            disp2.LoadLog($"{basePath}_2.log");
-            disp3.LoadLog($"{basePath}_3.log");
-            disp4.LoadLog($"{basePath}_4.log");
+            topSplit.leftLog.LoadLog($"{basePath}_1.log");
+            topSplit.rightLog.LoadLog($"{basePath}_2.log");
+            botSplit.leftLog.LoadLog($"{basePath}_3.log");
+            botSplit.rightLog.LoadLog($"{basePath}_4.log");
+            _should_scroll_to_bottom = true;
         }
     }
 }
