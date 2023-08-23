@@ -1,33 +1,14 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="LogDisplay" src="project://database/Assets/IT4080/Editor/LogDisplay.uxml?fileID=9197481963319205126&amp;guid=d58fca8ab98b74b478f1295e87001274&amp;type=3#LogDisplay" />
     <ui:Label text="-- Pre -- " display-tooltip-when-elided="true" style="-unity-text-align: upper-center;" />
-    <ui:TwoPaneSplitView orientation="Vertical" name="FourLogs" style="flex-shrink: 0; height: 300px;">
-        <ui:TwoPaneSplitView name="LogSplit1">
-            <ui:VisualElement name="LeftLog">
-                <ui:Label text="Title" display-tooltip-when-elided="true" name="Title" style="-unity-text-align: upper-center;" />
-                <ui:ScrollView mode="VerticalAndHorizontal" style="height: auto; width: auto; overflow: visible;">
-                    <ui:Label text="Hello World" display-tooltip-when-elided="true" name="LogText" />
-                </ui:ScrollView>
-            </ui:VisualElement>
-            <ui:VisualElement name="RightLog">
-                <ui:Label text="Title" display-tooltip-when-elided="true" name="Title" style="-unity-text-align: upper-center;" />
-                <ui:ScrollView mode="VerticalAndHorizontal" style="height: auto; width: auto; overflow: visible;">
-                    <ui:Label text="Hello World" display-tooltip-when-elided="true" name="LogText" />
-                </ui:ScrollView>
-            </ui:VisualElement>
+    <ui:TwoPaneSplitView orientation="Vertical" name="FourLogs" fixed-pane-initial-dimension="250" style="flex-shrink: 0; height: 300px;">
+        <ui:TwoPaneSplitView name="LogSplit1" fixed-pane-initial-dimension="250">
+            <ui:Instance template="LogDisplay" name="LeftLog" />
+            <ui:Instance template="LogDisplay" name="RightLog" />
         </ui:TwoPaneSplitView>
-        <ui:TwoPaneSplitView name="LogSplit2">
-            <ui:VisualElement name="LeftLog">
-                <ui:Label text="Title" display-tooltip-when-elided="true" name="Title" style="-unity-text-align: upper-center;" />
-                <ui:ScrollView mode="VerticalAndHorizontal" style="height: auto; width: auto; overflow: visible;">
-                    <ui:Label text="Hello World" display-tooltip-when-elided="true" name="LogText" />
-                </ui:ScrollView>
-            </ui:VisualElement>
-            <ui:VisualElement name="RightLog">
-                <ui:Label text="Title" display-tooltip-when-elided="true" name="Title" style="-unity-text-align: upper-center;" />
-                <ui:ScrollView mode="VerticalAndHorizontal" style="height: auto; width: auto; overflow: visible;">
-                    <ui:Label text="Hello World" display-tooltip-when-elided="true" name="LogText" />
-                </ui:ScrollView>
-            </ui:VisualElement>
+        <ui:TwoPaneSplitView name="LogSplit2" fixed-pane-initial-dimension="250">
+            <ui:Instance template="LogDisplay" name="LeftLog" />
+            <ui:Instance template="LogDisplay" name="RightLog" />
         </ui:TwoPaneSplitView>
     </ui:TwoPaneSplitView>
     <ui:Label text="-- Post -- " display-tooltip-when-elided="true" style="-unity-text-align: upper-center;" />

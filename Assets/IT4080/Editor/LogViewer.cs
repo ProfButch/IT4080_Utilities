@@ -9,8 +9,7 @@ namespace It4080
     public class LogViewer : EditorWindow
     {
         private class LogDisplay {
-            private VisualElement displayRoot;
-
+            public VisualElement displayRoot;
             public Label title;
             public Label logText;
             
@@ -53,28 +52,52 @@ namespace It4080
 
 
 
+        private TwoPaneSplitView mainSplit;
+        private TwoPaneSplitView split1;
+        private TwoPaneSplitView split2;
         private LogDisplay disp1;
         private LogDisplay disp2;
         private LogDisplay disp3;
         private LogDisplay disp4;
-        private TwoPaneSplitView logsBaseElement;
 
         public string basePath;
 
 
         private void SetupControls()
         {
-            logsBaseElement = rootVisualElement.Query<TwoPaneSplitView>("FourLogs");
+            mainSplit = rootVisualElement.Query<TwoPaneSplitView>("FourLogs");
 
-            VisualElement split_1 = rootVisualElement.Query<VisualElement>("LogSplit1").First();
-            VisualElement split_2 = rootVisualElement.Query<VisualElement>("LogSplit2").First();
+            split1 = rootVisualElement.Query<TwoPaneSplitView>("LogSplit1").First();
+            split2 = rootVisualElement.Query<TwoPaneSplitView>("LogSplit2").First();
 
-            disp1 = new LogDisplay(split_1.Query<VisualElement>("LeftLog").First());
-            disp2 = new LogDisplay(split_1.Query<VisualElement>("RightLog").First());
-            disp3 = new LogDisplay(split_2.Query<VisualElement>("LeftLog").First());
-            disp4 = new LogDisplay(split_2.Query<VisualElement>("RightLog").First());
+            disp1 = new LogDisplay(split1.Query<VisualElement>("LeftLog").First());
+            disp2 = new LogDisplay(split1.Query<VisualElement>("RightLog").First());
+            disp3 = new LogDisplay(split2.Query<VisualElement>("LeftLog").First());
+            disp4 = new LogDisplay(split2.Query<VisualElement>("RightLog").First());
+
         }
 
+
+        private void InitialLayout()
+        {
+            mainSplit.fixedPaneInitialDimension = mainSplit.resolvedStyle.height / 2.0f;
+            split1.fixedPaneInitialDimension = split1.resolvedStyle.width / 2.0f;
+            split2.fixedPaneInitialDimension = split2.resolvedStyle.width / 2.0f;
+
+        }
+
+        private bool is_first_update_call = true;
+        public void Update() {
+            // I could not figure out what event was the first event where all
+            // the controls have been fully instanced and sized.  Calling
+            // InitialLayout anywhere else always resulted in the various sizes
+            // (sytle.width, resolvedStyle.width, contentRect.size.x) being NaN.
+            if (is_first_update_call)
+            {
+                InitialLayout();
+                is_first_update_call = false;
+            }
+        }
 
         public void CreateGUI()
         {
@@ -88,7 +111,10 @@ namespace It4080
             root.RegisterCallback<GeometryChangedEvent>(OnRootResized);
 
             SetupControls();
+
         }
+
+
 
         // ----------------------
         // Events
@@ -100,8 +126,8 @@ namespace It4080
             // has a height of 0 (unless hardcoded to be different).  After too
             // much fighting this is the solution.  Also, HOORAY, yet another way
             // to connect to a signal in C#.
-            logsBaseElement.style.width = e.newRect.size.x;
-            logsBaseElement.style.height = e.newRect.size.y;
+            mainSplit.style.width = e.newRect.size.x;
+            mainSplit.style.height = e.newRect.size.y;
         }
 
 
