@@ -81,6 +81,23 @@ namespace It4080
         }
 
 
+        private void SetupControls()
+        {
+            VisualElement split_1 = rootVisualElement.Query<VisualElement>("TwoLogs1").First();
+            VisualElement split_2 = rootVisualElement.Query<VisualElement>("TwoLogs2").First();
+            disp1 = new LogDisplay(split_1.Query<VisualElement>("LeftLog").First());
+            disp2 = new LogDisplay(split_1.Query<VisualElement>("RightLog").First());
+            disp3 = new LogDisplay(split_2.Query<VisualElement>("LeftLog").First());
+            disp4 = new LogDisplay(split_2.Query<VisualElement>("RightLog").First());
+
+            disp1.title.text = "Hello World!!!";
+            disp1.logText.text = "Look\nHere\nYou\nShithead!!!";
+
+            disp2.title.text = "Hello World!!!";
+            disp2.logText.text = "Look\nHere\nYou\nShithead too!!!";
+        }
+
+
         public void CreateGUI()
         {
             Debug.Log("Creating GUI");
@@ -91,18 +108,7 @@ namespace It4080
             VisualElement uxmlElements = visualTree.Instantiate();
             root.Add(uxmlElements);
 
-            root.Query<VisualElement>("TwoLogs").First().visible = true;
-
-            disp1 = new LogDisplay(root.Query<VisualElement>("LogDisplay1").First());
-            disp2 = new LogDisplay(root.Query<VisualElement>("LogDisplay2").First());
-            disp3 = new LogDisplay(root.Query<VisualElement>("LogDisplay3").First());
-            disp4 = new LogDisplay(root.Query<VisualElement>("LogDisplay4").First());
-
-            disp1.title.text = "Hello World!!!";
-            disp1.logText.text = "Look\nHere\nYou\nShithead!!!";
-
-            disp2.title.text = "Hello World!!!";
-            disp2.logText.text = "Look\nHere\nYou\nShithead!!!";
+            SetupControls();
         }
 
 
