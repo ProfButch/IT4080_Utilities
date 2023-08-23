@@ -4,6 +4,8 @@ using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 using System.IO;
 using System;
+using Unity.VisualScripting;
+using UnityEditor.Graphs;
 
 namespace It4080
 {
@@ -21,7 +23,8 @@ namespace It4080
             private Scroller vertScroll;
             private Scroller horizScroll;
 
-
+            private DateTime lastFileChangeTime;
+            private string logPath = string.Empty;
 
             public LogDisplay(VisualElement baseElement) {
                 root = baseElement;
@@ -30,14 +33,8 @@ namespace It4080
                 vertScroll = root.Query<ScrollView>().First().verticalScroller;
                 horizScroll = root.Query<ScrollView>().First().horizontalScroller;
                 btnMaximize = root.Query<ToolbarButton>("Maximize").First();
-                btnMaximize.clicked += OnMaximizeClicked;
             }
 
-
-            private void OnMaximizeClicked()
-            {
-
-            }
 
             private string FileToText(string path) {
                 StreamReader reader = new StreamReader(path);
@@ -47,15 +44,12 @@ namespace It4080
             }
 
 
-            private string GetLastWriteTime(string path)
-            {
-                DateTime lastWriteTimeUtc = File.GetLastWriteTimeUtc(path);
-                return lastWriteTimeUtc.ToLocalTime().ToString();
-            }
-
-
             public void LoadLog(string path) {
-                title.text = $"{Path.GetFileName(path)} ({GetLastWriteTime(path)})";
+                logPath = path;
+                lastFileChangeTime = File.GetLastWriteTimeUtc(path);
+                string timeDisplay = lastFileChangeTime.ToLocalTime().ToString();
+
+                title.text = $"{Path.GetFileName(path)} ({timeDisplay})";
                 if (File.Exists(path)) {
                     logText.text = FileToText(path);
                 } else {
@@ -77,9 +71,33 @@ namespace It4080
                 vertScroll.value = 0;
                 horizScroll.value = 0;
             }
+
+            public bool LogFileHasChanged()
+            {
+                bool toReturn = false;
+                if (logPath != string.Empty && File.Exists(logPath))
+                {
+                    if(lastFileChangeTime == null)
+                    {
+                        toReturn = true;
+                    } else
+                    {
+                        toReturn = File.GetLastWriteTimeUtc(logPath) != lastFileChangeTime;
+                    }
+                }
+                return toReturn;
+            }
+
+
+            public void RefreshLog()
+            {
+                if (LogFileHasChanged())
+                {
+                    Debug.Log($"Refreshing {logPath}");
+                    LoadLog(logPath);
+                }
+            }
         }
-
-
 
 
         /**
@@ -146,7 +164,12 @@ namespace It4080
         private ToolbarButton btnRefresh;
         private Label lblInfo;
         private ToolbarToggle[] showLogButtons = new ToolbarToggle[4];
+        private ToolbarToggle tglAutoRefresh;
 
+        private bool autoRefresh = true;
+        private float refreshInterval = 1.0f;
+        private float timeSinceLastCheck = 0.0f;
+        
 
         public string basePath;
 
@@ -190,12 +213,29 @@ namespace It4080
                 topSplit.rightLog.ScrollToBottom();
                 _should_scroll_to_bottom = false;
             }
+
+            HandleAutoRefresh();
         }
 
 
         // ----------------------
         // Private
         // ----------------------
+        private void HandleAutoRefresh()
+        {
+            if (!autoRefresh) {
+                return;
+            }
+
+            timeSinceLastCheck += Time.deltaTime;
+            if(timeSinceLastCheck >= refreshInterval)
+            {
+                RefreshLogs();
+                timeSinceLastCheck = 0.0f;
+            }
+        }
+
+
         private void SetupLogToggle(string toggleName, LogSplit split, LogDisplay disp)
         {
             ToolbarToggle logToggle = rootVisualElement.Query<ToolbarToggle>(toggleName).First();
@@ -203,8 +243,8 @@ namespace It4080
         }
 
 
-        private void SetupMaximizeButton(LogDisplay disp, int index) {
-            disp.btnMaximize.clicked += () => OnMaximizeButtonClicked(disp, showLogButtons[index]);
+        private void SetupMaximizeButton(LogDisplay disp, int showLogButtonIndex) {
+            disp.btnMaximize.clicked += () => OnMaximizeButtonClicked(disp, showLogButtons[showLogButtonIndex]);
         }
 
 
@@ -222,6 +262,10 @@ namespace It4080
 
             btnRefresh = rootVisualElement.Query<ToolbarButton>("Refresh");
             btnRefresh.clicked += OnRefreshPressed;
+
+            tglAutoRefresh = rootVisualElement.Query<ToolbarToggle>("AutoRefresh").First();
+            btnRefresh.SetEnabled(!tglAutoRefresh.value);
+            tglAutoRefresh.RegisterValueChangedCallback(OnAutoRefreshToggled);
 
             lblInfo = rootVisualElement.Query<Label>("Info").First();
 
@@ -295,7 +339,15 @@ namespace It4080
 
         private void OnRefreshPressed()
         {
-            LoadLogs();
+            RefreshLogs();
+            btnRefresh.Focus();
+        }
+
+
+        private void OnAutoRefreshToggled(ChangeEvent<bool> changeEvent)
+        {
+            btnRefresh.SetEnabled(!changeEvent.newValue);
+            autoRefresh = changeEvent.newValue;
         }
 
 
@@ -310,6 +362,14 @@ namespace It4080
             botSplit.leftLog.LoadLog($"{basePath}_3.log");
             botSplit.rightLog.LoadLog($"{basePath}_4.log");
             _should_scroll_to_bottom = true;
+        }
+
+        public void RefreshLogs()
+        {
+            topSplit.leftLog.RefreshLog();
+            topSplit.rightLog.RefreshLog();
+            botSplit.leftLog.RefreshLog();
+            botSplit.rightLog.RefreshLog();
         }
     }
 }
