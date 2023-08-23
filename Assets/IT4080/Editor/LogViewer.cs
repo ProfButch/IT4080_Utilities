@@ -16,20 +16,28 @@ namespace It4080
             public VisualElement root;
             public Label title;
             public Label logText;
+            public ToolbarButton btnMaximize;
 
             private Scroller vertScroll;
             private Scroller horizScroll;
-            
 
-            public LogDisplay(VisualElement baseElement)
-            {
+
+
+            public LogDisplay(VisualElement baseElement) {
                 root = baseElement;
                 title = root.Query<Label>("Title").First();
                 logText = root.Query<Label>("LogText").First();                
                 vertScroll = root.Query<ScrollView>().First().verticalScroller;
                 horizScroll = root.Query<ScrollView>().First().horizontalScroller;
+                btnMaximize = root.Query<ToolbarButton>("Maximize").First();
+                btnMaximize.clicked += OnMaximizeClicked;
             }
 
+
+            private void OnMaximizeClicked()
+            {
+
+            }
 
             private string FileToText(string path) {
                 StreamReader reader = new StreamReader(path);
@@ -38,11 +46,13 @@ namespace It4080
                 return toReturn;
             }
 
+
             private string GetLastWriteTime(string path)
             {
                 DateTime lastWriteTimeUtc = File.GetLastWriteTimeUtc(path);
                 return lastWriteTimeUtc.ToLocalTime().ToString();
             }
+
 
             public void LoadLog(string path) {
                 title.text = $"{Path.GetFileName(path)} ({GetLastWriteTime(path)})";
@@ -54,11 +64,13 @@ namespace It4080
                 ScrollToBottom();
             }
 
+
             public void ScrollToBottom()
             {
                 vertScroll.value = vertScroll.highValue;
                 horizScroll.value = 0;
             }
+
 
             public void ScrollToTop()
             {
@@ -104,6 +116,18 @@ namespace It4080
                 }
             }
 
+            public void showOnlyLog(LogDisplay which)
+            {
+                LogDisplay other = leftLog;
+                if(which == leftLog)
+                {
+                    other = rightLog;
+                }
+
+                showLog(which, true);
+                showLog(other, false);
+            }
+
             public bool AreAllLogsHidden()
             {
                 return !leftLog.root.visible && !rightLog.root.visible;
@@ -121,10 +145,10 @@ namespace It4080
         private LogSplit botSplit;
         private ToolbarButton btnRefresh;
         private Label lblInfo;
+        private ToolbarToggle[] showLogButtons = new ToolbarToggle[4];
 
 
         public string basePath;
-
 
 
         public void CreateGUI() {
@@ -179,6 +203,11 @@ namespace It4080
         }
 
 
+        private void SetupMaximizeButton(LogDisplay disp, int index) {
+            disp.btnMaximize.clicked += () => OnMaximizeButtonClicked(disp, showLogButtons[index]);
+        }
+
+
         private void SetupControls()
         {
             mainSplit = rootVisualElement.Query<TwoPaneSplitView>("FourLogs");
@@ -195,7 +224,41 @@ namespace It4080
             btnRefresh.clicked += OnRefreshPressed;
 
             lblInfo = rootVisualElement.Query<Label>("Info").First();
+
+            showLogButtons[0] = rootVisualElement.Query<ToolbarToggle>("ShowLog1").First();
+            showLogButtons[1] = rootVisualElement.Query<ToolbarToggle>("ShowLog2").First();
+            showLogButtons[2] = rootVisualElement.Query<ToolbarToggle>("ShowLog3").First();
+            showLogButtons[3] = rootVisualElement.Query<ToolbarToggle>("ShowLog4").First();
+
+            SetupMaximizeButton(topSplit.leftLog, 0);
+            SetupMaximizeButton(topSplit.rightLog, 1);
+            SetupMaximizeButton(botSplit.leftLog, 2);
+            SetupMaximizeButton(botSplit.rightLog, 3);
         }
+
+
+        private void ShowSingleLog(LogDisplay whichLog, ToolbarToggle whichToggle)
+        {
+            foreach (ToolbarToggle b in showLogButtons){
+                b.value = b == whichToggle;
+            }
+
+            mainSplit.UnCollapse();
+            LogSplit parentSplit;
+            if(whichLog == topSplit.leftLog || whichLog == topSplit.rightLog)
+            {
+                mainSplit.CollapseChild(1);
+                parentSplit = topSplit;
+            }
+            else
+            {
+                mainSplit.CollapseChild(0);
+                parentSplit = botSplit;
+            }
+
+            parentSplit.showOnlyLog(whichLog);
+        }
+
 
         // ----------------------
         // Events
@@ -209,6 +272,10 @@ namespace It4080
             // to connect to a signal in C#.
             mainSplit.style.width = e.newRect.size.x;
             mainSplit.style.height = e.newRect.size.y;
+        }
+
+        private void OnMaximizeButtonClicked(LogDisplay disp, ToolbarToggle button) {
+            ShowSingleLog(disp, button);
         }
 
 
