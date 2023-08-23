@@ -93,8 +93,8 @@ namespace It4080
             {
                 if (LogFileHasChanged())
                 {
-                    Debug.Log($"Refreshing {logPath}");
                     LoadLog(logPath);
+                    ScrollToBottom();
                 }
             }
         }
@@ -166,7 +166,7 @@ namespace It4080
         private ToolbarToggle[] showLogButtons = new ToolbarToggle[4];
         private ToolbarToggle tglAutoRefresh;
 
-        private bool autoRefresh = true;
+        private bool autoRefresh = false;
         private float refreshInterval = 1.0f;
         private float timeSinceLastCheck = 0.0f;
         
@@ -264,6 +264,7 @@ namespace It4080
             btnRefresh.clicked += OnRefreshPressed;
 
             tglAutoRefresh = rootVisualElement.Query<ToolbarToggle>("AutoRefresh").First();
+            tglAutoRefresh.value = autoRefresh;
             btnRefresh.SetEnabled(!tglAutoRefresh.value);
             tglAutoRefresh.RegisterValueChangedCallback(OnAutoRefreshToggled);
 
