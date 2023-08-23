@@ -1,36 +1,34 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:TwoPaneSplitView name="VertSplit" fixed-pane-initial-dimension="400" orientation="Vertical" style="align-items: stretch; width: 100%; height: 100%; min-width: auto; min-height: auto; flex-shrink: 0; overflow: visible; flex-grow: 1;">
-        <ui:VisualElement name="TwoLogs1" style="flex-grow: 1; height: auto; overflow: hidden; width: 100%; display: flex; align-items: stretch; flex-shrink: 0; min-height: 199%;">
-            <ui:TwoPaneSplitView name="LogSplit" fixed-pane-initial-dimension="400" style="align-items: stretch; width: auto; height: 100%; min-width: auto; min-height: auto; flex-shrink: 0; overflow: visible; flex-grow: 1;">
-                <ui:VisualElement name="LeftLog">
-                    <ui:Label text="Label" display-tooltip-when-elided="true" name="Title" style="-unity-text-align: upper-center;" />
-                    <ui:ScrollView name="LogScroll" mode="VerticalAndHorizontal" horizontal-scroller-visibility="AlwaysVisible" vertical-scroller-visibility="AlwaysVisible" style="height: auto; width: auto; flex-direction: column; max-width: none; flex-shrink: 1; flex-grow: 1;">
-                        <ui:Label text="The UI Builder interface is comprised of three main sections. On the left-hand side, you’ll find StyleSheets, Hierarchy, and Library. In the middle, there is a Viewport that displays the preview of the editor window. On the right-hand side, the Inspector displays the USS styles.&#10;&#10;Hierarchy is the tree representation of elements inside UXML, Library has the UI elements which can be used to create the window and Inspector shows the USS styles of the selected element.&#10;&#10;Drag and drop the IMGUI Container from Library to the Hierarchy window. Drag and drop the Dropdown, Text Field, Toggle and Button from Library to Hierarchy such that they become children of the IMGUI Container." display-tooltip-when-elided="true" name="LogText" enable-rich-text="false" style="white-space: nowrap;" />
-                    </ui:ScrollView>
-                </ui:VisualElement>
-                <ui:VisualElement name="RightLog">
-                    <ui:Label text="Label" display-tooltip-when-elided="true" name="Title" style="-unity-text-align: upper-center;" />
-                    <ui:ScrollView name="LogScroll" mode="VerticalAndHorizontal" style="height: auto; width: auto; flex-direction: column; max-width: none; flex-shrink: 1; flex-grow: 1;">
-                        <ui:Label text="The UI Builder interface is comprised of three main sections. On the left-hand side, you’ll find StyleSheets, Hierarchy, and Library. In the middle, there is a Viewport that displays the preview of the editor window. On the right-hand side, the Inspector displays the USS styles.&#10;&#10;Hierarchy is the tree representation of elements inside UXML, Library has the UI elements which can be used to create the window and Inspector shows the USS styles of the selected element.&#10;&#10;Drag and drop the IMGUI Container from Library to the Hierarchy window. Drag and drop the Dropdown, Text Field, Toggle and Button from Library to Hierarchy such that they become children of the IMGUI Container." display-tooltip-when-elided="true" name="LogText" enable-rich-text="false" style="white-space: nowrap;" />
-                    </ui:ScrollView>
-                </ui:VisualElement>
-            </ui:TwoPaneSplitView>
-        </ui:VisualElement>
-        <ui:VisualElement name="TwoLogs2" style="flex-grow: 1; height: auto; overflow: hidden; width: 100%; display: flex; align-items: stretch; flex-shrink: 1; min-height: 199%;">
-            <ui:TwoPaneSplitView name="LogSplit" fixed-pane-initial-dimension="400" style="align-items: stretch; width: auto; height: 100%; min-width: auto; min-height: auto; flex-shrink: 0; overflow: visible; flex-grow: 1;">
-                <ui:VisualElement name="LeftLog">
-                    <ui:Label text="Label" display-tooltip-when-elided="true" name="Title" style="-unity-text-align: upper-center;" />
-                    <ui:ScrollView name="LogScroll" mode="VerticalAndHorizontal" horizontal-scroller-visibility="AlwaysVisible" vertical-scroller-visibility="AlwaysVisible" style="height: auto; width: auto; flex-direction: column; max-width: none; flex-shrink: 1; flex-grow: 1;">
-                        <ui:Label text="The UI Builder interface is comprised of three main sections. On the left-hand side, you’ll find StyleSheets, Hierarchy, and Library. In the middle, there is a Viewport that displays the preview of the editor window. On the right-hand side, the Inspector displays the USS styles.&#10;&#10;Hierarchy is the tree representation of elements inside UXML, Library has the UI elements which can be used to create the window and Inspector shows the USS styles of the selected element.&#10;&#10;Drag and drop the IMGUI Container from Library to the Hierarchy window. Drag and drop the Dropdown, Text Field, Toggle and Button from Library to Hierarchy such that they become children of the IMGUI Container." display-tooltip-when-elided="true" name="LogText" enable-rich-text="false" style="white-space: nowrap;" />
-                    </ui:ScrollView>
-                </ui:VisualElement>
-                <ui:VisualElement name="RightLog">
-                    <ui:Label text="Label" display-tooltip-when-elided="true" name="Title" style="-unity-text-align: upper-center;" />
-                    <ui:ScrollView name="LogScroll" mode="VerticalAndHorizontal" style="height: auto; width: auto; flex-direction: column; max-width: none; flex-shrink: 1; flex-grow: 1;">
-                        <ui:Label text="The UI Builder interface is comprised of three main sections. On the left-hand side, you’ll find StyleSheets, Hierarchy, and Library. In the middle, there is a Viewport that displays the preview of the editor window. On the right-hand side, the Inspector displays the USS styles.&#10;&#10;Hierarchy is the tree representation of elements inside UXML, Library has the UI elements which can be used to create the window and Inspector shows the USS styles of the selected element.&#10;&#10;Drag and drop the IMGUI Container from Library to the Hierarchy window. Drag and drop the Dropdown, Text Field, Toggle and Button from Library to Hierarchy such that they become children of the IMGUI Container." display-tooltip-when-elided="true" name="LogText" enable-rich-text="false" style="white-space: nowrap;" />
-                    </ui:ScrollView>
-                </ui:VisualElement>
-            </ui:TwoPaneSplitView>
-        </ui:VisualElement>
+    <ui:Label text="-- Pre -- " display-tooltip-when-elided="true" style="-unity-text-align: upper-center;" />
+    <ui:TwoPaneSplitView orientation="Vertical" name="FourLogs" style="flex-shrink: 0; height: 300px;">
+        <ui:TwoPaneSplitView name="LogSplit1">
+            <ui:VisualElement name="LeftLog">
+                <ui:Label text="Title" display-tooltip-when-elided="true" name="Title" style="-unity-text-align: upper-center;" />
+                <ui:ScrollView mode="VerticalAndHorizontal" style="height: auto; width: auto; overflow: visible;">
+                    <ui:Label text="Hello World" display-tooltip-when-elided="true" name="LogText" />
+                </ui:ScrollView>
+            </ui:VisualElement>
+            <ui:VisualElement name="RightLog">
+                <ui:Label text="Title" display-tooltip-when-elided="true" name="Title" style="-unity-text-align: upper-center;" />
+                <ui:ScrollView mode="VerticalAndHorizontal" style="height: auto; width: auto; overflow: visible;">
+                    <ui:Label text="Hello World" display-tooltip-when-elided="true" name="LogText" />
+                </ui:ScrollView>
+            </ui:VisualElement>
+        </ui:TwoPaneSplitView>
+        <ui:TwoPaneSplitView name="LogSplit2">
+            <ui:VisualElement name="LeftLog">
+                <ui:Label text="Title" display-tooltip-when-elided="true" name="Title" style="-unity-text-align: upper-center;" />
+                <ui:ScrollView mode="VerticalAndHorizontal" style="height: auto; width: auto; overflow: visible;">
+                    <ui:Label text="Hello World" display-tooltip-when-elided="true" name="LogText" />
+                </ui:ScrollView>
+            </ui:VisualElement>
+            <ui:VisualElement name="RightLog">
+                <ui:Label text="Title" display-tooltip-when-elided="true" name="Title" style="-unity-text-align: upper-center;" />
+                <ui:ScrollView mode="VerticalAndHorizontal" style="height: auto; width: auto; overflow: visible;">
+                    <ui:Label text="Hello World" display-tooltip-when-elided="true" name="LogText" />
+                </ui:ScrollView>
+            </ui:VisualElement>
+        </ui:TwoPaneSplitView>
     </ui:TwoPaneSplitView>
+    <ui:Label text="-- Post -- " display-tooltip-when-elided="true" style="-unity-text-align: upper-center;" />
 </ui:UXML>
