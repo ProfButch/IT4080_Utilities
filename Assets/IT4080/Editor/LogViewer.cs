@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 using System.IO;
+using System;
 
 namespace It4080
 {
@@ -37,9 +38,14 @@ namespace It4080
                 return toReturn;
             }
 
+            private string GetLastWriteTime(string path)
+            {
+                DateTime lastWriteTimeUtc = File.GetLastWriteTimeUtc(path);
+                return lastWriteTimeUtc.ToLocalTime().ToString();
+            }
 
             public void LoadLog(string path) {
-                title.text = path;
+                title.text = $"{Path.GetFileName(path)} ({GetLastWriteTime(path)})";
                 if (File.Exists(path)) {
                     logText.text = FileToText(path);
                 } else {
@@ -111,10 +117,12 @@ namespace It4080
         // ---------------------------------------------------------------------
 
         private TwoPaneSplitView mainSplit;
-
         private LogSplit topSplit;
         private LogSplit botSplit;
-        ToolbarButton btnRefresh;
+        private ToolbarButton btnRefresh;
+        private Label lblInfo;
+
+
         public string basePath;
 
 
@@ -185,6 +193,8 @@ namespace It4080
 
             btnRefresh = rootVisualElement.Query<ToolbarButton>("Refresh");
             btnRefresh.clicked += OnRefreshPressed;
+
+            lblInfo = rootVisualElement.Query<Label>("Info").First();
         }
 
         // ----------------------
@@ -227,6 +237,7 @@ namespace It4080
         // ----------------------
         public void LoadLogs()
         {
+            lblInfo.text = basePath;
             topSplit.leftLog.LoadLog($"{basePath}_1.log");
             topSplit.rightLog.LoadLog($"{basePath}_2.log");
             botSplit.leftLog.LoadLog($"{basePath}_3.log");

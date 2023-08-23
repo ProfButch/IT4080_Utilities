@@ -1,5 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <ui:Template name="LogDisplay" src="project://database/Assets/IT4080/Editor/LogDisplay.uxml?fileID=9197481963319205126&amp;guid=d58fca8ab98b74b478f1295e87001274&amp;type=3#LogDisplay" />
+    <ui:Label text="&lt;Info&gt;" display-tooltip-when-elided="true" name="Info" style="-unity-text-align: upper-right;" />
     <uie:Toolbar>
         <uie:ToolbarToggle focusable="false" value="true" name="ShowLog1" text="Log 1" style="flex-shrink: 1; min-width: auto; flex-basis: auto;" />
         <uie:ToolbarToggle focusable="false" value="true" name="ShowLog2" text="Log 2" style="flex-shrink: 1;" />
@@ -17,5 +18,4 @@
             <ui:Instance template="LogDisplay" name="RightLog" />
         </ui:TwoPaneSplitView>
     </ui:TwoPaneSplitView>
-    <ui:Label text="-- Post -- " display-tooltip-when-elided="true" style="-unity-text-align: upper-center;" />
 </ui:UXML>
