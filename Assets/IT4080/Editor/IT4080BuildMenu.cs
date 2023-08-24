@@ -353,7 +353,7 @@ public static class IT4080BuildMenu {
 
 
     [MenuItem("IT4080/ViewLogs")]
-    private static void MnuWindow() {
+    private static void MnuViewLogs() {
         ShowLogs();
     }
 

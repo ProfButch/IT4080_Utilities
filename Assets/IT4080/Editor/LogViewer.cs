@@ -128,6 +128,10 @@ namespace It4080
             private void UpdateTitle()
             {
                 string changeTimeDisplay = lastFileChangeTime.ToLocalTime().ToString();
+                if(lastFileChangeTime == DateTime.MinValue)
+                {
+                    changeTimeDisplay = "File not found";
+                }
                 title.text = $"{Path.GetFileName(logPath)} ({changeTimeDisplay}) {linesRead} lines";
             }
 
@@ -149,6 +153,7 @@ namespace It4080
                     LoadFileAsLabels(path);
                 } else {
                     AddLineSimple("File not found");
+                    UpdateTitle();
                 }
                 ScrollToBottom();
             }
