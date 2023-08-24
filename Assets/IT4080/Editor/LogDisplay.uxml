@@ -5,8 +5,8 @@
             <uie:ToolbarSpacer style="flex-grow: 1;" />
             <uie:ToolbarButton text="  ^  " display-tooltip-when-elided="true" name="Maximize" />
         </uie:Toolbar>
-        <ui:ScrollView mode="VerticalAndHorizontal" style="height: auto; width: auto; overflow: visible;">
-            <ui:Label text="Hello World" display-tooltip-when-elided="true" name="LogText" />
+        <ui:ScrollView mode="VerticalAndHorizontal" style="height: auto; width: auto; overflow: hidden;">
+            <ui:Label text="Hello World" display-tooltip-when-elided="true" name="LogText" enable-rich-text="false" style="overflow: hidden;" />
         </ui:ScrollView>
     </ui:VisualElement>
 </ui:UXML>

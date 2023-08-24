@@ -6,6 +6,9 @@ using System.IO;
 using System;
 using Unity.VisualScripting;
 using UnityEditor.Graphs;
+using Codice.CM.WorkspaceServer;
+using System.Collections.Generic;
+using Codice.CM.Client.Differences.Graphic;
 
 namespace It4080
 {
@@ -20,10 +23,12 @@ namespace It4080
             public Label logText;
             public ToolbarButton btnMaximize;
 
+            private ScrollView scrollView;
             private Scroller vertScroll;
             private Scroller horizScroll;
 
             private DateTime lastFileChangeTime;
+            private DateTime lastCreationTime;
             private string logPath = string.Empty;
 
             public LogDisplay(VisualElement baseElement) {
@@ -33,27 +38,47 @@ namespace It4080
                 vertScroll = root.Query<ScrollView>().First().verticalScroller;
                 horizScroll = root.Query<ScrollView>().First().horizontalScroller;
                 btnMaximize = root.Query<ToolbarButton>("Maximize").First();
+                scrollView = root.Query<ScrollView>().First();
             }
 
 
-            private string FileToText(string path) {
-                StreamReader reader = new StreamReader(path);
-                string toReturn = reader.ReadToEnd();
-                reader.Close();
-                return toReturn;
+            private void addLine(string text)
+            {
+                var lbl = new Label();
+                lbl.text = text;
+                scrollView.Add(lbl);
+            }
+
+
+            private void LoadFileAsLabels(string path)
+            {
+                IEnumerable<string> lines = File.ReadLines(path);
+                var line_count = 0;
+                var cur_line_count = scrollView.childCount;
+                foreach(string line in lines)
+                {
+                    line_count += 1;
+                    if(line_count > cur_line_count)
+                    {
+                        addLine($"{line_count}    {line}");
+                    }
+                }
             }
 
 
             public void LoadLog(string path) {
                 logPath = path;
+
+                scrollView.Clear();
+                lastCreationTime = File.GetCreationTime(path);
                 lastFileChangeTime = File.GetLastWriteTimeUtc(path);
                 string timeDisplay = lastFileChangeTime.ToLocalTime().ToString();
 
                 title.text = $"{Path.GetFileName(path)} ({timeDisplay})";
                 if (File.Exists(path)) {
-                    logText.text = FileToText(path);
+                    LoadFileAsLabels(path);
                 } else {
-                    logText.text = "File not found";
+                    addLine("File not found");
                 }
                 ScrollToBottom();
             }
@@ -71,6 +96,7 @@ namespace It4080
                 vertScroll.value = 0;
                 horizScroll.value = 0;
             }
+
 
             public bool LogFileHasChanged()
             {
@@ -93,6 +119,10 @@ namespace It4080
             {
                 if (LogFileHasChanged())
                 {
+                    if(lastCreationTime != File.GetCreationTime(logPath))
+                    {
+                        scrollView.Clear();
+                    }
                     LoadLog(logPath);
                     ScrollToBottom();
                 }
