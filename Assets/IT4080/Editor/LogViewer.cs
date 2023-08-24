@@ -28,8 +28,11 @@ namespace It4080
             private Scroller horizScroll;
 
             private DateTime lastFileChangeTime;
-            private DateTime lastCreationTime;
+            //private DateTime lastCreationTime;  REMEMBER, creation time was buggy on mac
             private string logPath = string.Empty;
+
+            private int linesRead = 0;
+
 
             public LogDisplay(VisualElement baseElement) {
                 root = baseElement;
@@ -42,43 +45,110 @@ namespace It4080
             }
 
 
-            private void addLine(string text)
+
+            // All this didn't seem to make much difference (it does some) when
+            // compared to making a label for each line.
+            //
+            // Maybe concatination is just as expensive as making a new lablel?
+            // On 7k lines in one log this shaves off about 1 second.  With
+            // 15k lines in two logs each, this shaves off maybe 5 seconds.
+            private Label curLabel = null;
+            private int lineLimit = 10;
+            private int linesAdded = 0;
+            private string textBuffer = string.Empty;
+            private void AddLineComplicated(string text)
             {
-                var lbl = new Label();
-                lbl.text = text;
+                if (curLabel == null || linesAdded > lineLimit) {
+                    curLabel = new Label();
+                    scrollView.Add(curLabel);
+                    curLabel.text = textBuffer;
+                    linesAdded = 0;
+                    textBuffer = string.Empty;
+                }
+
+                if (linesAdded == 0) {
+                    textBuffer = text;
+                } else {
+                    textBuffer += $"\n{text}";
+                }
+                linesAdded += 1;
+            }
+
+
+            private void flushComplicatedAddLines() {
+                if (textBuffer != string.Empty) {
+                    curLabel = new Label();
+                    scrollView.Add(curLabel);
+                    curLabel.text = textBuffer;
+                    linesAdded = 0;
+                    textBuffer = string.Empty;
+                }
+            }
+
+
+            private void AddLineSimple(string text)
+            {
+                var lbl = new Label(text);
                 scrollView.Add(lbl);
             }
 
 
+            private void addLine(string text)
+            {
+                AddLineComplicated(text);
+            }
+
+
+            /**
+             * This will read the entire file and add any lines that do not exist
+             * already to the scrollView.  To refresh the contents completely
+             * call scrollView.Clear() BEFORE calling this.
+             */
             private void LoadFileAsLabels(string path)
             {
                 IEnumerable<string> lines = File.ReadLines(path);
                 var line_count = 0;
                 var cur_line_count = scrollView.childCount;
+                linesRead = 0;
                 foreach(string line in lines)
                 {
                     line_count += 1;
+                    linesRead += 1;
                     if(line_count > cur_line_count)
                     {
-                        addLine($"{line_count}    {line}");
+                        addLine(line);
                     }
                 }
+                flushComplicatedAddLines();
+                UpdateTimestamps();
+                UpdateTitle();
             }
 
 
+            private void UpdateTitle()
+            {
+                string changeTimeDisplay = lastFileChangeTime.ToLocalTime().ToString();
+                title.text = $"{Path.GetFileName(logPath)} ({changeTimeDisplay}) {linesRead} lines";
+            }
+
+            private void UpdateTimestamps()
+            {
+                lastFileChangeTime = File.GetLastWriteTimeUtc(logPath);
+
+            }
+
+
+            /**
+             * Clears the text and loads a file
+             */
             public void LoadLog(string path) {
                 logPath = path;
 
                 scrollView.Clear();
-                lastCreationTime = File.GetCreationTime(path);
-                lastFileChangeTime = File.GetLastWriteTimeUtc(path);
-                string timeDisplay = lastFileChangeTime.ToLocalTime().ToString();
-
-                title.text = $"{Path.GetFileName(path)} ({timeDisplay})";
                 if (File.Exists(path)) {
                     LoadFileAsLabels(path);
                 } else {
-                    addLine("File not found");
+                    AddLineSimple("File not found");
                 }
                 ScrollToBottom();
             }
@@ -111,19 +181,28 @@ namespace It4080
                         toReturn = File.GetLastWriteTimeUtc(logPath) != lastFileChangeTime;
                     }
                 }
+
                 return toReturn;
             }
 
 
+            /**
+             * Only clears the text if the creation time is different.
+             */
             public void RefreshLog()
             {
                 if (LogFileHasChanged())
                 {
-                    if(lastCreationTime != File.GetCreationTime(logPath))
-                    {
+                    // Could not get good data for the creation time of a file so
+                    // we reload the whole thing if it's been 5 seconds or more
+                    // since the last time we loaded any of the file.  This
+                    // stops excessive Clear calls during AutoRefresh.
+                    TimeSpan minTime = new TimeSpan(0, 0, 5);
+                    TimeSpan diff = File.GetLastWriteTimeUtc(logPath).Subtract(lastFileChangeTime);
+                    if (diff > minTime) {
                         scrollView.Clear();
                     }
-                    LoadLog(logPath);
+                    LoadFileAsLabels(logPath);
                     ScrollToBottom();
                 }
             }
@@ -196,7 +275,7 @@ namespace It4080
         private ToolbarToggle[] showLogButtons = new ToolbarToggle[4];
         private ToolbarToggle tglAutoRefresh;
 
-        private bool autoRefresh = false;
+        private bool autoRefresh = true;
         private float refreshInterval = 1.0f;
         private float timeSinceLastCheck = 0.0f;
         

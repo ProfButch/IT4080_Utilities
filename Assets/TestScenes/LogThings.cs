@@ -7,7 +7,7 @@ public class LogThings : MonoBehaviour
 
     float timeBetweenPrints = 0.5f;
     float timeSinceLastPrint = 0.0f;
-
+    float timesPrinted = 0;
 
 
 
@@ -21,9 +21,11 @@ public class LogThings : MonoBehaviour
     void Update()
     {
         timeSinceLastPrint += Time.deltaTime;
+        
         if(timeSinceLastPrint >= timeBetweenPrints)
         {
-            Debug.Log("I'm printing things");
+            timesPrinted += 1;
+            Debug.Log($"I'm printing things {timesPrinted}");
             timeSinceLastPrint = 0.0f;
         }
     }
