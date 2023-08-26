@@ -25,7 +25,7 @@ namespace It4080
 
             private ScrollView scrollView;
             private Scroller vertScroll;
-            private Scroller horizScroll;
+            private Scroller horizScroll;         
 
             private DateTime lastFileChangeTime;
             //private DateTime lastCreationTime;  REMEMBER, creation time was buggy on mac
@@ -41,7 +41,7 @@ namespace It4080
                 vertScroll = root.Query<ScrollView>().First().verticalScroller;
                 horizScroll = root.Query<ScrollView>().First().horizontalScroller;
                 btnMaximize = root.Query<ToolbarButton>("Maximize").First();
-                scrollView = root.Query<ScrollView>().First();
+                scrollView = root.Query<ScrollView>().First();                
             }
 
 
@@ -93,12 +93,6 @@ namespace It4080
             }
 
 
-            private void addLine(string text)
-            {
-                AddLineComplicated(text);
-            }
-
-
             /**
              * This will read the entire file and add any lines that do not exist
              * already to the scrollView.  To refresh the contents completely
@@ -116,7 +110,7 @@ namespace It4080
                     linesRead += 1;
                     if(line_count > cur_line_count)
                     {
-                        addLine(line);
+                        AddLineComplicated(line);
                     }
                 }
                 flushComplicatedAddLines();
@@ -173,7 +167,7 @@ namespace It4080
             }
 
 
-            public bool LogFileHasChanged()
+            public bool HasLogFileChanged()
             {
                 bool toReturn = false;
                 if (logPath != string.Empty && File.Exists(logPath))
@@ -196,7 +190,7 @@ namespace It4080
              */
             public void RefreshLog()
             {
-                if (LogFileHasChanged())
+                if (HasLogFileChanged())
                 {
                     // Could not get good data for the creation time of a file so
                     // we reload the whole thing if it's been 5 seconds or more
@@ -273,12 +267,14 @@ namespace It4080
         // ---------------------------------------------------------------------
 
         private TwoPaneSplitView mainSplit;
-        private LogSplit topSplit;
-        private LogSplit botSplit;
-        private ToolbarButton btnRefresh;
         private Label lblInfo;
+        private LogSplit topSplit;
+        private LogSplit botSplit;        
+        
+        private Toolbar toolbar;
         private ToolbarToggle[] showLogButtons = new ToolbarToggle[4];
         private ToolbarToggle tglAutoRefresh;
+        private ToolbarButton btnRefresh;
 
         private bool autoRefresh = true;
         private float refreshInterval = 1.0f;
@@ -365,6 +361,7 @@ namespace It4080
         private void SetupControls()
         {
             mainSplit = rootVisualElement.Query<TwoPaneSplitView>("FourLogs");
+            toolbar = rootVisualElement.Query<Toolbar>().First();
 
             topSplit = new LogSplit(rootVisualElement.Query<TwoPaneSplitView>("LogSplit1").First());
             botSplit = new LogSplit(rootVisualElement.Query<TwoPaneSplitView>("LogSplit2").First());
@@ -430,8 +427,14 @@ namespace It4080
             // much fighting this is the solution.  Also, HOORAY, yet another way
             // to connect to a signal in C#.
             mainSplit.style.width = e.newRect.size.x;
-            mainSplit.style.height = e.newRect.size.y;
+            // I should be able to use mainSplit.<something>.position.y, but I
+            // couldn't figure out what <something> should be.  So here's a some
+            // tech debt for you:  This will be wrong if things move and the
+            // toolbar is not just above the mainSplit.  BTW, what if the actual
+            // ... is resolvedSytle.position?
+            mainSplit.style.height = e.newRect.size.y - toolbar.resolvedStyle.height - toolbar.contentRect.position.y;
         }
+
 
         private void OnMaximizeButtonClicked(LogDisplay disp, ToolbarToggle button) {
             ShowSingleLog(disp, button);
