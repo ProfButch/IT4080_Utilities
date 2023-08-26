@@ -8,5 +8,6 @@
 # Exclude everything
 *                       export-ignore
 # Un-exclude IT4080 folder
+/Assets
 /Assets/IT4080                -export-ignore
 /Assets/IT4080/**             -export-ignore
