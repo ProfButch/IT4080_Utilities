@@ -14,6 +14,7 @@ public static class IT4080Menu
     [MenuItem("IT4080/About")]
     private static void MnuAbout()
     {
-        Debug.Log($"IT4080 Menu Version {VERSION}");
+        Debug.Log($"IT4080 Menu Version {VERSION}\n" +
+            $"  builds to:  {EditorPrefs.GetString(IT4080BuildMenu.BUILD_PATH_PREF)}");
     }
 }

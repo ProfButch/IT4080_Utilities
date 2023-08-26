@@ -97,7 +97,7 @@ public static class IT4080BuildMenu {
 
 
 
-    private const string BUILD_PATH_PREF = "it4080hBuildPath";
+    public const string BUILD_PATH_PREF = "it4080hBuildPath";
     private const string NOT_SET = "<No Path Set>";
     private static OsHelper osHelper = new OsHelper();
 
@@ -275,6 +275,7 @@ public static class IT4080BuildMenu {
         window.LoadLogs();
     }
 
+
     // ------------------------------------------------------------------------
     // Build Menus
     // ------------------------------------------------------------------------
@@ -352,9 +353,19 @@ public static class IT4080BuildMenu {
     }
 
 
-    [MenuItem("IT4080/ViewLogs")]
+
+    //--------------------------------
+    // View Menus
+    //--------------------------------
+    [MenuItem("IT4080/View Logs", false , 300)]
     private static void MnuViewLogs() {
         ShowLogs();
     }
 
+    [MenuItem("IT4080/Show Files", false, 300)]
+    private static void MnuViewFiles()
+    {
+        string curPath = GetBuildPath();
+        EditorUtility.RevealInFinder(Path.GetDirectoryName(curPath));
+    }
 }
