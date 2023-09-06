@@ -10,7 +10,7 @@ using Codice.CM.WorkspaceServer;
 using System.Collections.Generic;
 using Codice.CM.Client.Differences.Graphic;
 
-namespace It4080
+namespace com.bitwes
 {
     public class LogViewer : EditorWindow
     {

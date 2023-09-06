@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <ui:Template name="LogDisplay" src="project://database/Assets/IT4080/Editor/LogDisplay.uxml?fileID=9197481963319205126&amp;guid=d58fca8ab98b74b478f1295e87001274&amp;type=3#LogDisplay" />
+    <ui:Template name="LogDisplay" src="project://database/Packages/com.bitwes.it4080_menu/Editor/LogDisplay.uxml?fileID=9197481963319205126&amp;guid=d58fca8ab98b74b478f1295e87001274&amp;type=3#LogDisplay" />
     <Style src="project://database/Assets/IT4080/Editor/LogViewer.uss?fileID=7433441132597879392&amp;guid=e11d6529eaf854f67b11b043b8808466&amp;type=3#LogViewer" />
     <ui:Label text="&lt;Info&gt;" display-tooltip-when-elided="true" name="Info" style="-unity-text-align: upper-center;" />
     <uie:Toolbar>
