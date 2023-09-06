@@ -5,8 +5,9 @@ using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEditor.SceneManagement;
 
-namespace com.bitwes
-{
+namespace com.bitwes {
+
+
     [InitializeOnLoadAttribute]
     public static class IT4080Menu
     {
@@ -319,7 +320,7 @@ namespace com.bitwes
         private static void ShowLogs()
         {
             string curPath = EditorPrefs.GetString(BUILD_PATH_PREF);
-            var window = EditorWindow.GetWindow<It4080.LogViewer>();
+            var window = EditorWindow.GetWindow<com.bitwes.LogViewer>();
             window.basePath = Path.Join(Path.GetDirectoryName(curPath), Path.GetFileNameWithoutExtension(curPath));
             window.ShowPopup();
             window.LoadLogs();
