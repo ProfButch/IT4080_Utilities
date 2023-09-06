@@ -424,10 +424,11 @@ namespace com.bitwes {
         // Disabling view logs for now since it goes back to it's default state
         // when scripts are reloaded.  I think this could be avoided if this was
         // an actual plugin instead of just files.  Also, it's a bit buggy and slow.
-        //[MenuItem("IT4080/View Logs", false , 300)]
-        //private static void MnuViewLogs() {
-        //    ShowLogs();
-        //}
+        [MenuItem("IT4080/View Logs", false, 300)]
+        private static void MnuViewLogs()
+        {
+            ShowLogs();
+        }
 
         [MenuItem("IT4080/Show Files", false, 300)]
         private static void MnuViewFiles()

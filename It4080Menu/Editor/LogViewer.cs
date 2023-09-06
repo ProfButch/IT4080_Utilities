@@ -286,7 +286,7 @@ namespace com.bitwes
 
         public void CreateGUI() {
             VisualElement root = rootVisualElement;
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/IT4080/Editor/LogViewer.uxml");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.bitwes.it4080_menu/Editor/LogViewer.uxml");
             VisualElement uxmlElements = visualTree.Instantiate();
             root.Add(uxmlElements);
 
